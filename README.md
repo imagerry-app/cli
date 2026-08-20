@@ -38,28 +38,32 @@ Verify the installation:
 imagerry -h
 ```
 
-## Licensing
+## Free Tier & Licensing
 
-Imagerry CLI requires an **Imagerry Pro** license.
+Imagerry CLI includes a **Free Tier** that allows you to process up to **15 free images per day** without requiring a license key.
 
-You can provide your license key in either of the following ways.
+For unlimited daily processing, automated loops/batch scripts, or hosting the self-hosted `serve` API and `mcp` server, an **[Imagerry Pro](https://imagerry.com/pro)** license is required.
 
-### Command-line option
+### Using Pro License
+
+You can provide your license key in either of the following ways:
+
+#### Command-line option
 
 ```bash
 imagerry --input=input.png --output=output.png --license-key=YOUR_KEY
 ```
 
-### Environment variable
+#### Environment variable
 
-For automation and CI/CD environments, using an environment variable is recommended:
+For automation, Docker, and CI/CD environments:
 
 ```bash
 export IMAGERRY_LICENSE_KEY="YOUR_KEY"
 ```
 
 > [!TIP]
-> The CLI verifies your license with the payment server, but CLI usage does **not count against your device limit**. This makes it suitable for automated environments such as GitHub Actions, Docker, and CI/CD pipelines.
+> CLI usage does **not count against your device limit**. You can use your Pro license freely across your local terminal, Docker containers, and CI/CD pipelines.
 
 ## Usage
 
@@ -209,4 +213,5 @@ The CLI only communicates with the licensing service when verifying your Imagerr
 ## Links
 
 * [Imagerry](https://imagerry.com)
+* [Imagerry Pro](https://imagerry.com/pro)
 * [Legal & Terms](https://imagerry.com/legal)
