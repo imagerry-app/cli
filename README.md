@@ -18,6 +18,7 @@ The official command-line interface for [Imagerry](https://imagerry.com), built 
 
 * 🖥️ Process images directly from the terminal
 * 🌐 **New:** Host a self-hosted API server with `serve`
+* 🧠 **New:** Model Context Protocol (MCP) server support for AI agents (Claude Desktop, Cursor, Zed)
 * 🔒 Keep image processing completely local
 * 🎨 Apply built-in styling presets
 * ⚙️ Create and reuse custom JSON presets
@@ -175,6 +176,37 @@ The server also exposes a few helpful informational routes:
 - `GET /presets` — Returns a JSON array of all built-in named presets.
 - `GET /template` — Returns a JSON object of all available settings keys and their defaults.
 - `GET /health` — Returns server health status and engine version.
+
+## Model Context Protocol (MCP) Server
+
+Imagerry CLI includes an official **Model Context Protocol (MCP)** server that exposes local image styling and formatting tools directly to AI assistants like Claude Desktop, Cursor, and Zed.
+
+### Starting the MCP Server
+
+```bash
+imagerry mcp
+```
+
+### Claude Desktop Configuration
+
+Add the following to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "imagerry": {
+      "command": "imagerry",
+      "args": ["mcp"],
+      "env": {
+        "IMAGERRY_LICENSE_KEY": "YOUR_PRO_LICENSE_KEY"
+      }
+    }
+  }
+}
+```
+
+### Registered Tools
+* **`customize_image`**: Applies presets, gradients, and custom styles to local images (`inputPath`, `outputPath`, `preset`, `mode`).
 
 ## Automation
 
