@@ -84,25 +84,27 @@ imagerry -i input.png -o output.png
 
 ## Built-in Presets
 
-To view a full list of available built-in styles and their descriptions, run:
+Imagerry comes with built-in styling presets (such as `mesh`, `gradient`, `cyberpunk`, `aurora`, `sunset`, `studio`, and `default`).
+
+To view the full list of available presets and their descriptions, run:
 
 ```bash
 imagerry --list-presets
 ```
 
-Once you've found a style you like, you can apply it using the `--preset` flag:
+Once you've found a style you like, apply it using the `--preset` flag:
 
 ```bash
-imagerry --input=input.png --output=output.png --preset=mesh
+imagerry -i input.png -o output.png --preset=mesh
 ```
 
 ## Custom JSON Presets
 
-For more control over the output, Imagerry supports custom JSON presets.
+For complete control over every visual attribute, Imagerry supports custom JSON presets matching the full capabilities of the image customizer engine.
 
 ### 1. Export a preset template
 
-Generate a starting configuration:
+Generate a starting configuration with all supported settings:
 
 ```bash
 imagerry --export-preset-template=my-style.json
@@ -167,11 +169,11 @@ curl -f -X POST http://localhost:5273/api/v1/process \
 > [!WARNING]
 > We strongly recommend including the `-f` (or `--fail-with-body`) flag when using `curl` with `--output`. If the API returns an error, this flag prevents `curl` from saving the JSON error response directly into your output image file, which would result in a corrupted image.
 
-### Built-in API Reference
+### API Documentation
 
-Once the server is running, visit **`http://localhost:5273/docs`** in your browser to view the API reference.
+Explore the full API documentation, parameter specifications, and integration guides at **[imagerry.com/cli/docs/serve-api](https://imagerry.com/cli/docs)**.
 
-The server also exposes a few helpful informational routes:
+The server also exposes helpful informational routes:
 
 - `GET /presets` — Returns a JSON array of all built-in named presets.
 - `GET /template` — Returns a JSON object of all available settings keys and their defaults.
