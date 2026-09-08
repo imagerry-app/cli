@@ -1,11 +1,6 @@
-# Imagerry CLI (Beta)
+# Imagerry CLI (v0.2.0-beta)
 
-The official command-line interface for [Imagerry](https://imagerry.com), built for automating image processing and styling directly from your terminal.
-
-> [!NOTE]
-> **Beta Release**
-> 
-> Imagerry CLI is currently in beta. At this time, it only supports the **image customizer** mode with basic styling capabilities.
+The official high-performance command-line interface for [Imagerry](https://imagerry.com), built for automating image processing, styling, format conversion, and mockups directly from your terminal.
 
 > [!IMPORTANT]
 > **Privacy-first processing**
@@ -16,14 +11,17 @@ The official command-line interface for [Imagerry](https://imagerry.com), built 
 
 ## Features
 
-* 🖥️ Process images directly from the terminal
-* 🌐 **New:** Host a self-hosted API server with `serve`
-* 🧠 **New:** Model Context Protocol (MCP) server support for AI agents (Claude Desktop, Cursor, Zed)
-* 🔒 Keep image processing completely local
-* 🎨 Apply built-in styling presets
-* ⚙️ Create and reuse custom JSON presets
-* 🤖 Use in scripts, Docker, and CI/CD workflows
-* 📦 Automate workflows with GitHub Actions
+* 🖥️ **Terminal Processing**: Style single images or batch process entire directories
+* 🖼️ **Multi-Format Output**: Native WebP, JPEG, and PNG encoding with configurable quality
+* 🎨 **Built-in Presets**: Stunning modern aesthetics (`mesh`, `gradient`, `cyberpunk`, `sunset`, `studio`, `aurora`)
+* ⚡ **Direct CLI Overrides**: Fine-tune `--padding`, `--radius`, `--shadow`, `--bg-color`, and `--ratio` directly from the command line without writing JSON
+* 📁 **Batch Processing**: Parallel multi-image folder and wildcard conversion (`--batch`) with live progress
+* ⚙️ **Project Config**: Define team-wide default styles in `imagerry.config.json` with `imagerry init`
+* 🌐 **Self-Hosted API Server**: Run a local or VPS microservice with `imagerry serve`
+* 🧠 **Model Context Protocol (MCP)**: Native tools for Claude Desktop, Cursor, and Zed AI assistants
+* 🤖 **CI/CD & Automation**: Run in GitHub Actions, Docker, and shell pipelines
+
+---
 
 ## Installation
 
@@ -36,162 +34,186 @@ npm install -g @imagerry/cli
 Verify the installation:
 
 ```bash
+imagerry -v
 imagerry -h
 ```
 
+---
+
 ## Free Tier & Licensing
 
-Imagerry CLI includes a **Free Tier** that allows you to process up to **15 free images per day** without requiring a license key.
+Imagerry CLI includes a **Free Tier** allowing you to process up to **15 free images per day** without a license key.
 
-For unlimited daily processing, automated loops/batch scripts, or hosting the self-hosted `serve` API and `mcp` server, an **[Imagerry Pro](https://imagerry.com/pro)** license is required.
+For unlimited daily processing, high-volume automated batch scripts, or hosting the self-hosted `serve` API and `mcp` server, an **[Imagerry Pro](https://imagerry.com/pro)** license is required.
 
-### Using Pro License
+### Providing Pro License
 
-You can provide your license key in either of the following ways:
-
-#### Command-line option
-
+#### Option A: Command-line flag
 ```bash
-imagerry --input=input.png --output=output.png --license-key=YOUR_KEY
+imagerry -i input.png -o output.png --license-key=YOUR_KEY
 ```
 
-#### Environment variable
-
-For automation, Docker, and CI/CD environments:
-
+#### Option B: Environment variable (Recommended for CI/CD & Docker)
 ```bash
 export IMAGERRY_LICENSE_KEY="YOUR_KEY"
 ```
 
 > [!TIP]
-> CLI usage does **not count against your device limit**. You can use your Pro license freely across your local terminal, Docker containers, and CI/CD pipelines.
+> CLI usage does **not count against your desktop device limit**. You can use your Pro license freely across terminals, servers, Docker containers, and CI/CD pipelines.
 
-## Usage
+---
 
-### Basic usage
+## Usage Guide
 
-Process an image using the default settings:
+### 1. Basic Usage & Formats
 
-```bash
-imagerry --input=input.png --output=output.png
-```
-
-You can also use the shorter argument aliases:
-
+Process an image with default styles:
 ```bash
 imagerry -i input.png -o output.png
 ```
 
-## Built-in Presets
+Convert and compress to **WebP** or **JPEG** with custom quality:
+```bash
+# Auto-detected format from file extension
+imagerry -i photo.png -o photo.webp -q 85
 
-Imagerry comes with built-in styling presets (such as `mesh`, `gradient`, `cyberpunk`, `aurora`, `sunset`, `studio`, and `default`).
+# Explicit format flag
+imagerry -i photo.png -o result.jpg --format jpeg --quality 80
+```
 
-To view the full list of available presets and their descriptions, run:
+### 2. Built-in Presets
 
+Imagerry includes curated visual presets (e.g. `mesh`, `gradient`, `cyberpunk`, `default`).
+
+To list all available presets from your terminal:
 ```bash
 imagerry --list-presets
 ```
 
-Once you've found a style you like, apply it using the `--preset` flag:
+All presets and configuration properties are documented in the **[JSON Schema](https://imagerry.com/schema/config.json)**.
 
+Apply a preset:
 ```bash
-imagerry -i input.png -o output.png --preset=mesh
+imagerry -i app.png -o app-styled.webp --preset mesh
 ```
 
-## Custom JSON Presets
+### 3. Direct CLI Styling Flags (No JSON Required)
 
-For complete control over every visual attribute, Imagerry supports custom JSON presets matching the full capabilities of the image customizer engine.
-
-### 1. Export a preset template
-
-Generate a starting configuration with all supported settings:
+Easily adjust individual visual parameters without touching preset files:
 
 ```bash
+imagerry -i screenshot.png -o screenshot.webp \
+  --preset mesh \
+  --padding 40 \
+  --radius 20 \
+  --shadow 60 \
+  --bg-color "#0a0a0a" \
+  --ratio 16:9 \
+  --watermark "© 2026 Acme Corp"
+```
+
+Supported direct flags:
+- `--padding <number>`: Canvas padding percent (e.g. `24`, `40`, `50`)
+- `--radius <number>`: Inner image corner radius (e.g. `12`, `16`, `24`)
+- `--shadow <number>`: Drop shadow strength (e.g. `30`, `50`, `70`)
+- `--bg-color <hex>`: Solid background color (e.g. `"#000000"`, `"#18181b"`)
+- `--ratio <ratio>`: Aspect ratio (`"16:9"`, `"1:1"`, `"4:3"`, `"auto"`)
+- `--watermark <text>`: Watermark text overlay
+- `--title <text>` & `--subtitle <text>`: Header overlay text
+- `--blur <number>`, `--contrast <number>`, `--brightness <number>`, `--saturation <number>`
+
+### 4. Batch & Directory Processing
+
+Process an entire folder of screenshots or images in one command:
+
+```bash
+# Process all images in a directory to ./dist
+imagerry -i ./screenshots -o ./dist --preset mesh --format webp
+
+# Batch process with wildcard pattern
+imagerry --batch "assets/*.png" -o ./dist --preset gradient --quality 85
+
+# Adjust parallel worker concurrency
+imagerry -i ./raw-photos -o ./compressed --preset studio --concurrency 6
+```
+
+### 5. Project Configuration (`imagerry.config.json`)
+
+Standardize visual branding across team members and repositories. Initialize a configuration file in your project root:
+
+```bash
+imagerry init --preset mesh
+```
+
+This creates an `imagerry.config.json`:
+```json
+{
+  "$schema": "https://imagerry.com/schema/config.json",
+  "preset": "mesh",
+  "format": "webp",
+  "quality": 90,
+  "padding": 36,
+  "borderRadius": 16,
+  "shadowSize": 50,
+  "canvasRatio": "auto"
+}
+```
+
+Whenever you run `imagerry -i input.png -o output.webp`, the CLI automatically detects and applies your project configuration!
+
+### 6. Custom JSON Presets
+
+For full control over every setting, export and customize template JSON files:
+
+```bash
+# Export template
 imagerry --export-preset-template=my-style.json
+
+# Apply template
+imagerry -i input.png -o output.png --preset my-style.json
 ```
 
-Edit `my-style.json` with your preferred settings.
-
-### 2. Apply a preset file
-
-```bash
-imagerry \
-  -i input.png \
-  -o output.png \
-  -m image-customizer \
-  --preset my-style.json
-```
-
-### 3. Pass JSON directly
-
-For simple configurations, you can provide the preset directly from the terminal:
-
-```bash
-imagerry \
-  -i input.png \
-  -o output.png \
-  -m image-customizer \
-  --preset '{"padding": 64, "bgColor": "#000000"}'
-```
-
-This can be useful for scripts where creating a separate preset file would add unnecessary complexity.
-
-## Command Reference
-
-To view all available commands, options, and examples:
-
-```bash
-imagerry -h
-```
+---
 
 ## API Server
 
-Imagerry CLI includes a built-in Express server that allows you to self-host the engine as a REST API. You can host this on Railway, Render, or any VPS.
-
-To start the API server:
+Self-host the Imagerry engine as a high-performance REST API:
 
 ```bash
 imagerry serve --port 5273
 ```
-*(Note: A valid `IMAGERRY_LICENSE_KEY` environment variable or `--license-key` flag is required to start the server).*
+*(Requires `IMAGERRY_LICENSE_KEY`)*
 
-### API Example
-
-Send a `multipart/form-data` POST request to process an image instantly over HTTP:
+### Processing via HTTP:
 
 ```bash
 curl -f -X POST http://localhost:5273/api/v1/process \
-  -F "image=@/path/to/your/input.png" \
-  -F 'preset={"padding": 64, "bgColor": "#18181b"}' \
-  --output result.png
+  -F "image=@/path/to/screenshot.png" \
+  -F "preset=mesh" \
+  -F "format=webp" \
+  -F "quality=85" \
+  -F "padding=40" \
+  --output result.webp
 ```
 
-> [!WARNING]
-> We strongly recommend including the `-f` (or `--fail-with-body`) flag when using `curl` with `--output`. If the API returns an error, this flag prevents `curl` from saving the JSON error response directly into your output image file, which would result in a corrupted image.
+Helpful metadata endpoints:
+- `GET /presets` — List built-in presets
+- `GET /template` — Full JSON template structure
+- `GET /health` — Server health status and version
 
-### API Documentation
-
-Explore the full API documentation, parameter specifications, and integration guides at **[imagerry.com/cli/docs/serve-api](https://imagerry.com/cli/docs)**.
-
-The server also exposes helpful informational routes:
-
-- `GET /presets` — Returns a JSON array of all built-in named presets.
-- `GET /template` — Returns a JSON object of all available settings keys and their defaults.
-- `GET /health` — Returns server health status and engine version.
+---
 
 ## Model Context Protocol (MCP) Server
 
-Imagerry CLI includes an official **Model Context Protocol (MCP)** server that exposes local image styling and formatting tools directly to AI assistants like Claude Desktop, Cursor, and Zed.
+Imagerry CLI includes a built-in MCP server enabling AI coding assistants (Claude Desktop, Cursor, Zed) to style, format, and batch-process local images autonomously.
 
-### Starting the MCP Server
+### Starting MCP:
 
 ```bash
 imagerry mcp
 ```
 
-### Claude Desktop Configuration
-
-Add the following to your `claude_desktop_config.json`:
+### Configuration (`claude_desktop_config.json`):
 
 ```json
 {
@@ -207,45 +229,19 @@ Add the following to your `claude_desktop_config.json`:
 }
 ```
 
-### Registered Tools
-* **`customize_image`**: Applies presets, gradients, and custom styles to local images (`inputPath`, `outputPath`, `preset`, `mode`).
+### Available AI Tools:
+1. **`customize_image`**: Format and style single images with preset, padding, radius, format (`webp`, `jpeg`, `png`), and quality.
+2. **`batch_customize_images`**: Process entire directories in bulk for agents generating assets.
+3. **`list_presets`**: Query descriptions of all available styling presets.
 
-## Automation
+---
 
-Imagerry CLI is designed to work well in automated environments.
+## Troubleshooting & Privacy
 
-For example, you can provide your license through an environment variable:
-
-```bash
-export IMAGERRY_LICENSE_KEY="YOUR_KEY"
-
-imagerry \
-  -i input.png \
-  -o output.png \
-  --preset=gradient
-```
-
-When using a CI provider, store `IMAGERRY_LICENSE_KEY` as a secret rather than committing the license key to your repository.
-
-> [!WARNING]
-> Never commit your Imagerry license key to Git or include it directly in a public workflow configuration.
-
-## Troubleshooting
-
-### License issues
-
-If your license cannot be verified, double-check that your key is valid and it belongs to Imagerry. If you lost your key or need help, please contact us at **support@imagerry.com**.
-
-## Privacy
-
-Your source images stay on your machine or your own hosted server.
-
-Imagerry CLI processes and renders all images locally. Images do not need to be uploaded to Imagerry or any external image-processing server.
-
-The CLI only communicates with the licensing service when verifying your Imagerry Pro license.
+- **Image Security**: All image manipulation is performed in-memory on your local CPU/GPU using native Skia bindings (`@napi-rs/canvas`). Your images are **never transmitted over the network**.
+- **Licensing**: For support or key inquiries, contact **support@imagerry.com**.
 
 ## Links
-
-* [Imagerry](https://imagerry.com)
+* [Imagerry Official Website](https://imagerry.com)
 * [Imagerry Pro](https://imagerry.com/pro)
-* [Legal & Terms](https://imagerry.com/legal)
+* [Legal & Privacy Terms](https://imagerry.com/legal)
