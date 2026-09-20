@@ -81,7 +81,25 @@ imagerry -i photo.png -o photo.webp -q 85
 imagerry -i photo.png -o result.jpg --format jpeg --quality 80
 ```
 
-### 2. Built-in Presets
+### 2. Unix Pipelines (Stdin / Stdout)
+
+Imagerry supports full Unix streaming pipelines for integration with other tools (e.g. `curl`, ImageMagick, ffmpeg, or shell redirects):
+
+```bash
+# Read from standard input (stdin)
+cat input.png | imagerry -i - -o styled.png --preset mesh
+
+# Write binary output to standard output (stdout)
+imagerry -i photo.png -o - --format webp --preset gradient > result.webp
+
+# Full bidirectional pipeline (stdin → stdout)
+curl -sL https://example.com/badge.png | imagerry -i - -o - --format webp > optimized.webp
+```
+
+> [!TIP]
+> When streaming to `stdout` (`-o -`), all progress spinners and logs are automatically redirected to `stderr` or suppressed, ensuring the redirected standard output contains clean, uncorrupted binary image data.
+
+### 3. Built-in Presets
 
 Imagerry includes curated visual presets (e.g. `mesh`, `gradient`, `cyberpunk`, `default`).
 
@@ -233,6 +251,20 @@ imagerry mcp
 1. **`customize_image`**: Format and style single images with preset, padding, radius, format (`webp`, `jpeg`, `png`), and quality.
 2. **`batch_customize_images`**: Process entire directories in bulk for agents generating assets.
 3. **`list_presets`**: Query descriptions of all available styling presets.
+
+---
+
+## Standardized Exit Codes
+
+For automation and CI/CD pipelines, Imagerry CLI adheres to standardized POSIX exit codes:
+
+| Code | Meaning | Description |
+| :---: | :--- | :--- |
+| `0` | **`SUCCESS`** | Image rendering, batch processing, or command executed successfully. |
+| `1` | **`GENERAL_ERROR`** | General runtime failure, disk write permission error, or canvas render error. |
+| `2` | **`INVALID_ARGUMENT`** | Missing required flags, missing input file, or invalid preset/format syntax. |
+| `3` | **`LICENSE_ERROR`** | License key invalid, expired, or free tier daily quota exceeded. |
+| `4` | **`CRITICAL_UPDATE_REQUIRED`** | Running an obsolete version below the minimum supported version. |
 
 ---
 
