@@ -1,4 +1,4 @@
-# Imagerry CLI (v0.2.0-beta)
+# Imagerry CLI (v0.2.1-beta)
 
 The official high-performance command-line interface for [Imagerry](https://imagerry.com), built for automating image processing, styling, format conversion, and mockups directly from your terminal.
 
@@ -25,7 +25,19 @@ The official high-performance command-line interface for [Imagerry](https://imag
 
 ## Installation
 
-Install Imagerry CLI globally using npm:
+### Option A: Standalone Binary (Zero Node.js Required)
+
+Recommended for Docker, CI/CD runners, and systems without Node.js installed:
+
+```bash
+# macOS & Linux
+curl -fsSL https://imagerry.com/cli/install.sh | bash
+
+# Windows (PowerShell)
+irm https://imagerry.com/cli/install.ps1 | iex
+```
+
+### Option B: npm Global Install (Node.js 18+)
 
 ```bash
 npm install -g @imagerry/cli
@@ -39,6 +51,7 @@ imagerry -h
 ```
 
 ---
+
 
 ## Free Tier & Licensing
 
